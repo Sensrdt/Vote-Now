@@ -1,0 +1,30 @@
+{
+  "name": "e-voting-app",
+  "version": "1.0.0",
+  "description": "E-Voting App for college and small scale organizations election ",
+  "main": "main.js",
+  "scripts": {
+    "lint": "eslint .",
+    "start": "node main.js",
+    "test": "nodemon ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "mongodb": "^3.3.0-beta2",
+    "mongoose": "^5.6.8",
+    "short-id": "0.1.0-1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.18.2"
+  }
+}
