@@ -169,6 +169,7 @@ public class Login extends AppCompatActivity {
                             intent.putExtra("id",id);
                             intent.putExtra("phone",getPhone);
                             startActivity(intent);
+                            //Toast.makeText(Login.this, "Login Done",Toast.LENGTH_LONG).show();
                             finish();
                         }catch (Exception e){
                             progressDialog.dismiss();

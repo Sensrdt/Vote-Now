@@ -104,6 +104,14 @@ public class StartPage extends AppCompatActivity {
                 nextIntent();
             }
         });
+        createVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartPage.this, CreateVote.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void accountSettings() {

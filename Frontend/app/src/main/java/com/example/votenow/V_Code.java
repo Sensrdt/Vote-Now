@@ -71,7 +71,6 @@ public class V_Code extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void verifyCode() {
