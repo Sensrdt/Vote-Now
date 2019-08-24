@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb://192.168.43.120/';
-// 'mongodb+srv://E-Voting-App:e-voting-app@e-voting-app-7ooq0.mongodb.net/test?retryWrites=true&w=majority';
+const uri = 'mongodb://172.17.44.49';
 
 const client = new MongoClient(uri, { useNewUrlParser: true });
 
