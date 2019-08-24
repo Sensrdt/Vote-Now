@@ -1,5 +1,6 @@
 package com.example.votenow;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,17 +11,37 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class CreateVote extends AppCompatActivity {
 
     ArrayList<EditText> candidates = null;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_vote);
         candidates = new ArrayList<>();
+
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Please Wait While We Log In");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Login In");
+        progressDialog.setCanceledOnTouchOutside(false);
+
 
 
     }
@@ -56,6 +77,8 @@ public class CreateVote extends AppCompatActivity {
         if(!err)
             Toast.makeText(this,finalString,Toast.LENGTH_LONG).show();
     }
+
+
 
     @Override
     public void onBackPressed() {

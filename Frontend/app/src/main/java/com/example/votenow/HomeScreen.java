@@ -1,5 +1,6 @@
 package com.example.votenow;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 public class HomeScreen extends AppCompatActivity {
 
     private Button VN, AC, CV, LO,viewVote;
@@ -18,6 +28,10 @@ public class HomeScreen extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor meditor;
     AlertDialog alertDialog;
+
+    String createVoteURL,URL;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +54,23 @@ public class HomeScreen extends AppCompatActivity {
         phoneNumber=intent.getStringExtra("phone");
         getPassword=sharedPreferences.getString("password","null");
 
+        //URL
+        URL=getResources().getString(R.string.URL);
+        createVoteURL=URL+"admin/register";
+
         CV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                progressDialog=new ProgressDialog(HomeScreen.this);
+                progressDialog.setMessage("Please Wait While We Made You as Admin");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setTitle("Create Vote");
+                progressDialog.setCanceledOnTouchOutside(false);
+
+
 
                 Intent intent = new Intent(HomeScreen.this,CreateVote
                         .class);
@@ -150,6 +178,53 @@ public class HomeScreen extends AppCompatActivity {
         });
         alertDialog.show();
 
+    }
+
+    private void volley() {
+        progressDialog.show();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        queue.start();
+        JSONObject jsonObject = new JSONObject();
+
+        String url =getResources().getString(R.string.URL)+"login" ;
+        try {
+            jsonObject.accumulate("id",id);
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            progressDialog.dismiss();
+                            if(response.getBoolean("Done")==true){
+                                startActivity(new Intent(HomeScreen.this,CreateVote.class));
+                            }
+
+
+                            }
+                            catch (Exception e){
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"Retry",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Retry", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        queue.add(jsonObjectRequest);
+        // Toast.makeText(getApplicationContext(),"done",Toast.LENGTH_SHORT).show();
     }
 
 
