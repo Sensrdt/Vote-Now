@@ -1,7 +1,9 @@
 package com.example.votenow;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -53,5 +55,11 @@ public class CreateVote extends AppCompatActivity {
         }
         if(!err)
             Toast.makeText(this,finalString,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CreateVote.this,HomeScreen.class);
+        startActivity(intent);
     }
 }

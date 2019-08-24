@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".HomeScreen"></activity>
+        <activity android:name=".GooglyEyesActivity"></activity>
         <activity android:name=".CreateVote" />
         <activity android:name=".VoteNow" />
         <activity android:name=".AccountSettings" />
@@ -35,5 +36,16 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <dist:module dist:instant="true" />
+
 
 </manifest>
