@@ -24,12 +24,21 @@ module.exports = (req, res) => {
     );
   });
   db.collection('organisation').findOne({ orgName }, (err, field) => {
+    const vtc = ids.generate();
     if (err) throw err;
     if (field === null) {
       db.collection('organisation').insertOne(
-        { orgName, admins: [{ id }], voteCode: ids.generate() },
+        {
+          orgName,
+          admins: [{ id, voteCode: vtc }],
+        },
         error => {
           if (err) console.log(error);
+          else
+            res.status(200).send({
+              Done: true,
+              ID: vtc,
+            });
         }
       );
     } else {

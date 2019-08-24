@@ -36,6 +36,7 @@ app.post('/:id/org_register', orgRegister);
 app.post('/:voteId/:id/ongoing', ongoing);
 app.post('/:id/voter_list_checking', listchecking);
 app.post('/uploadList', uploadList);
+app.post('/list_checking', listchecking);
 
 connect({
   app,
