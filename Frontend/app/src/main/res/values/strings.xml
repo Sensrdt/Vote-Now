@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Vote Now</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="password">Password</string>
+    <string name="cpassword">Confirm Password</string>
+    <string name="register">New User? Register?</string>
+    <string name="voteCode">Vote Code</string>
+    <string name="title_activity_phone">Phone</string>
+    <string name="checkbox">Remember me</string>
+    <string name="face">Capture Face</string>
+    <string name="id">Upload Id</string>
+    !
+    <string name="URL">http://chisel-trawler.glitch.me/</string>
+</resources>
