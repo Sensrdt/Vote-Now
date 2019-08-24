@@ -19,8 +19,6 @@ const port = 5555;
 /*
   /register => Name, Org Name, DOB, Email, Phone Number, Password (Done)
   /login => email, password (Done)
-  /:id/upload1 => Photo1 (Done) 
-  /:id/upload2 => Photo2 (Done)
   /:admin_id/register => Organisation_Name  orgRegister,
   adminRegister
   /:admin_id/org_name/vote_id => generate vote ID

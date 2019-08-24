@@ -18,8 +18,16 @@ module.exports = (req, res) => {
         if (vCode === voteCode) voteFound = true;
       }
 
-      if (voteFound && voters.includes(id)) res.status(200).send({});
-      else res.status(404).send({});
+      if (voteFound && voters.includes(id))
+        res.status(200).send({
+          Status: 200,
+          Done: true,
+        });
+      else
+        res.status(404).send({
+          Status: 404,
+          Done: true,
+        });
     }
   });
 };

@@ -17,7 +17,9 @@ module.exports = (req, res) => {
         if (error) {
           console.log(error);
         } else {
-          res.send('Done');
+          res.status(200).send({
+            Done: true,
+          });
           console.log('Done Admin insert');
         }
       });

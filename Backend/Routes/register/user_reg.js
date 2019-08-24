@@ -22,10 +22,6 @@ module.exports = (req, res) => {
         if (error) console.log('Error');
         else console.log('Done');
       });
-    } else {
-      res.status(408).send({
-        Message: 'Please Retry',
-      });
     }
   });
 };
