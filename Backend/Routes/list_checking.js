@@ -5,21 +5,21 @@ const { client } = require('../server');
  */
 
 module.exports = (req, res) => {
-  // const { id } = req.params;
+  const { id } = req.params;
 
   const { voteCode, orgName } = req.body;
-  let found = false;
+  let voteFound = false;
   const db = client.db('Db');
   db.collection('organisation').findOne({ orgName }, (err, field) => {
     if (field !== null) {
-      const { admins } = field;
+      const { admins, voters } = field;
       // eslint-disable-next-line
-      for (const i in admins) {
-        if (admins[i].voteCode === voteCode) found = true;
-        console.log(admins[i]);
+      for (const { voteCode: vCode } of admins) {
+        if (vCode === voteCode) voteFound = true;
       }
-      if (!found) res.status(404).send({});
-      else res.status(200).send({});
+
+      if (voteFound && voters.includes(id)) res.status(200).send({});
+      else res.status(404).send({});
     }
   });
 };

@@ -37,7 +37,7 @@ app.post('/:id/org_register', orgRegister);
 app.post('/:id/voter_list_checking', listchecking);
 app.post('/uploadList', uploadList);
 app.post('/voteControl/:command', voteControl);
-app.post('/list_checking', listchecking);
+app.post('/:id/list_checking', listchecking);
 app.post('/:id/updateCandidate', updateCandidates);
 
 connect({
