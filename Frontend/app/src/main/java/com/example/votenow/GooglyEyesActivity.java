@@ -25,6 +25,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -48,6 +50,8 @@ import com.example.votenow.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Activity for Googly Eyes, an app that uses the camera to track faces and superimpose Googly Eyes
@@ -68,6 +72,8 @@ import java.io.IOException;
  * more scanning at finer levels of detail, rear facing mode may not be as responsive as front
  * facing mode.<p>
  */
+
+ //textToSpeech.speak(s,TextToSpeech.QUEUE_FLUSH,null);
 public final class GooglyEyesActivity extends AppCompatActivity {
     private static final String TAG = "GooglyEyes";
 
@@ -81,6 +87,7 @@ public final class GooglyEyesActivity extends AppCompatActivity {
     private GraphicOverlay mGraphicOverlay;
 
     private boolean mIsFrontFacing = true;
+    TextToSpeech textToSpeech;
 
     //==============================================================================================
     // Activity Methods
@@ -89,10 +96,14 @@ public final class GooglyEyesActivity extends AppCompatActivity {
     /**
      * Initializes the UI and initiates the creation of a face detector.
      */
+
+    private String actionString = "";
+    private String[] AString=null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_googly_eye);
+
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
@@ -100,10 +111,61 @@ public final class GooglyEyesActivity extends AppCompatActivity {
         final Button button = (Button) findViewById(R.id.flipButton);
         button.setOnClickListener(mFlipButtonListener);
 
+        textToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status==TextToSpeech.SUCCESS){
+                    textToSpeech.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
+
         if (savedInstanceState != null) {
             mIsFrontFacing = savedInstanceState.getBoolean("IsFrontFacing");
         }
 
+        for(int x=0;x<10;x++) {
+            actionString = "";
+            int size = ((int) (Math.random() * 100)) % 4 + 3;
+            boolean left = true, right = true;
+            for (int i = 0; i < size; i++) {
+                int action = ((int) (Math.random() * 100)) % 3;
+                switch (action) {
+                    case 0:
+                        if (left)
+                            actionString += "Please close your left eye\n";
+
+                        else
+                            actionString += "Please open your left eye\n";
+                        left = !left;
+                        break;
+                    case 1:
+                        if (right)
+                            actionString += "Please close your right eye\n";
+                        else
+                            actionString += "Please open your right eye\n";
+                        right = !right;
+                        break;
+                    case 2:
+                        if (right && left) {
+                            actionString += "Please close both your eyes\n";
+                            right=false;
+                            left=false;
+                        }
+                        else {
+                            actionString += "Please open both your eyes\n";
+                            right=left=true;
+                        }
+                        break;
+                    default:
+                        Toast.makeText(this, "Wut?", Toast.LENGTH_SHORT).show();
+                }
+            }
+            Log.d("RANDOM_TEST", actionString+"\n\n");
+        }
+
+        AString = actionString.split("\n");
+        Log.d("StringAction",actionString);
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -112,6 +174,11 @@ public final class GooglyEyesActivity extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(GooglyEyesActivity.this,Verification.class));
     }
 
     /**
@@ -223,10 +290,34 @@ public final class GooglyEyesActivity extends AppCompatActivity {
                 .show();
     }
 
-    private boolean lastL = false, lastR = false;
+    private boolean lastL = false, lastR = false; int pos = 0;
+    private void readOut(){
+        /*pos++;
+        Log.d("POS",""+pos);
+        textToSpeech.speak(AString[pos% AString.length],TextToSpeech.QUEUE_FLUSH,null, "MySpeach");
+        Log.d("EyeofConduct",AString[pos% AString.length]);*/
+        int eye = (int)(Math.random()*2);
+        int state = (int)(Math.random()*2);
+        textToSpeech.speak("Please " +(state==0?"close":"open")+" your "+(eye==0?"left":"right")+" eye" ,TextToSpeech.QUEUE_FLUSH,null,"World");
+    }
     public void eyeCounter(boolean right, boolean left) {
-        if(lastL != left) Log.d("EyeofConduct", "Left");
-        if(lastR != right) Log.d("EyeofConduct", "Right");
+
+        left = true;
+        right = true;
+        if(lastL != left) {
+            Log.d("EyeofConduct", left?"LeftOpen":"LeftClose");
+            readOut();
+        }
+        /*
+            Initial state
+            (Initial state) ^ -1
+
+        */
+
+        if(lastR != right) {
+            Log.d("EyeofConduct", right?"RightOpen":"RightClose");
+            readOut();
+        }
         lastL = left;
         lastR = right;
         if(left) Log.d("Eye", "Left");
@@ -336,7 +427,8 @@ public final class GooglyEyesActivity extends AppCompatActivity {
         if (!detector.isOperational()) {
             // Note: The first time that an app using face API is installed on a device, GMS will
             // download a native library to the device in order to do detection.  Usually this
-            // completes before the app is run for the first time.  But if that download has not yet
+            // completes before the app is run for the first time
+            // .  But if that download has not yet
             // completed, then the above call will not detect any faces.
             //
             // isOperational() can be used to check if the required native library is currently
