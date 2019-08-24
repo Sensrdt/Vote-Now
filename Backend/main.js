@@ -11,6 +11,7 @@ const uploads = require('./Routes/uploads');
 const uploadList = require('./Routes/uploadList');
 const listchecking = require('./Routes/list_checking');
 const voteControl = require('./Routes/voteControl');
+const updateCandidates = require('./Routes/updateCandidate');
 
 const app = express();
 app.use(express.json());
@@ -37,6 +38,7 @@ app.post('/:id/voter_list_checking', listchecking);
 app.post('/uploadList', uploadList);
 app.post('/voteControl/:command', voteControl);
 app.post('/list_checking', listchecking);
+app.post('/:id/updateCandidate', updateCandidates);
 
 connect({
   app,
