@@ -19,5 +19,6 @@ module.exports = {
     quotes: ['error', 'single'],
     'prettier/prettier': ['error'],
     'no-underscore-dangle': 'off',
+    'no-restricted-syntax': 'off',
   },
 };
