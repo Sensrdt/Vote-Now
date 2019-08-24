@@ -11,23 +11,27 @@ module.exports = (req, res) => {
     Admin_Id: id,
   };
   const db = client.db('Db');
-  db.collection('admin').findOne({ Admin_Id: id }, (err, user) => {
-    if (user === null) {
-      db.collection('admin').insertOne(admin_inst, error => {
-        if (error) {
-          console.log(error);
-        } else {
-          res.status(200).send({
-            Done: true,
-          });
-          console.log('Done Admin insert');
-        }
-      });
-    } else {
-      res.status(404).send({
-        Done: false,
-        Message: 'Please Retry',
-      });
-    }
-  });
+  if (id != null) {
+    db.collection('admin').findOne({ Admin_Id: id }, (err, user) => {
+      if (user === null) {
+        db.collection('admin').insertOne(admin_inst, error => {
+          if (error) {
+            console.log(error);
+          } else {
+            res.status(200).send({
+              Done: true,
+            });
+            console.log('Done Admin insert');
+          }
+        });
+      } else {
+        res.status(200).send({
+          Done: true,
+          Message: 'Insert over there',
+        });
+      }
+    });
+  } else {
+    res.status(400).send('Enter the id');
+  }
 };
