@@ -24,7 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Verification extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 1;
-    private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private static final int MY_CAMERA_REQUEST_CODE = 0;
     public Button faceButton,idButton;
     ImageView imageView;
     Bitmap bitmap;
@@ -32,6 +32,8 @@ public class Verification extends AppCompatActivity {
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     boolean faceBool=false,idBool=false;
     ImageButton next;
+
+    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 
 
@@ -108,7 +110,7 @@ public class Verification extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode!=456) return;
+        if(requestCode!=MY_CAMERA_REQUEST_CODE) return;
         try {
             bitmap=(Bitmap)data.getExtras().get("data");
             circleImageView.setImageBitmap(bitmap);
@@ -132,12 +134,15 @@ public class Verification extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent cameraIntent = new Intent(Verification.this,GooglyEyesActivity.class);
                     startActivity(cameraIntent);
+                    //startActivityForResult(takePictureIntent, MY_CAMERA_REQUEST_CODE);
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
                 return;
             }
+
 
             // other 'case' lines to check for other
             // permissions this app might request.

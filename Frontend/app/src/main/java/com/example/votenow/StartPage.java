@@ -129,10 +129,10 @@ public class StartPage extends AppCompatActivity {
             vCode.setError("Vote Code is Empty");
         }
         else{
-            volley();
+            //volley();
 
-            //Intent intent = new Intent(StartPage.this,Verification.class);
-            //startActivity(intent);
+            Intent intent = new Intent(StartPage.this,Verification.class);
+            startActivity(intent);
         }
     }
 
