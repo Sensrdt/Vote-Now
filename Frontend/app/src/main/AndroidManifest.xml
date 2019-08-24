@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".VoteNow"></activity>
+        <activity android:name=".CreateVote"></activity>
+        <activity android:name=".VoteNow" />
         <activity android:name=".AccountSettings" />
         <activity android:name=".Verification" />
         <activity android:name=".StartPage" />
@@ -28,9 +29,9 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <dist:module dist:instant="true" />
 
