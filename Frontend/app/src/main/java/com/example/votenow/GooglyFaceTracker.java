@@ -52,14 +52,15 @@ class GooglyFaceTracker extends Tracker<Face> {
     // intermediate frames which lack eye landmarks and corresponding eye state.
     private boolean mPreviousIsLeftOpen = true;
     private boolean mPreviousIsRightOpen = true;
-
+    private  GooglyEyesActivity activity = null;
 
     //==============================================================================================
     // Methods
     //==============================================================================================
 
-    GooglyFaceTracker(GraphicOverlay overlay) {
+    GooglyFaceTracker(GraphicOverlay overlay, GooglyEyesActivity activity) {
         mOverlay = overlay;
+        this.activity = activity;
     }
 
     /**
@@ -101,6 +102,7 @@ class GooglyFaceTracker extends Tracker<Face> {
             isRightOpen = (rightOpenScore > EYE_CLOSED_THRESHOLD);
             mPreviousIsRightOpen = isRightOpen;
         }
+        activity.eyeCounter(isLeftOpen,isRightOpen);
 
         mEyesGraphic.updateEyes(leftPosition, isLeftOpen, rightPosition, isRightOpen);
     }
