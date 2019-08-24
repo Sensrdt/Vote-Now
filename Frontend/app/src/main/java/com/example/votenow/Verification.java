@@ -9,8 +9,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Verification extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 1;
+    private static final int MY_CAMERA_REQUEST_CODE = 100;
     public Button faceButton,idButton;
     ImageView imageView;
     Bitmap bitmap;
@@ -54,9 +57,39 @@ public class Verification extends AppCompatActivity {
         faceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent,456);
+
+
+                if (ContextCompat.checkSelfPermission(Verification.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(Verification.this,
+                            Manifest.permission.CAMERA)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(Verification.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                MY_CAMERA_PERMISSION_CODE);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                    }
+                } else {
+                    // Permission has already been granted
+                    Intent cameraIntent = new Intent(Verification.this,GooglyEyesActivity.class);
+                    try {
+                        startActivity(cameraIntent);
+                    }catch (Exception e){
+                        Log.e("FACE",e.getMessage());                    }
+
+                }
+
             }
+
+
+
         });
 
 
@@ -90,17 +123,25 @@ public class Verification extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case CAMERA_REQUEST:
-                if(permissions.length>0 && permissions[0].equals(PackageManager.PERMISSION_GRANTED)){
-                    Toast.makeText(Verification.this,"Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
-
-                }else {
-                    Toast.makeText(Verification.this,"Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
-
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_CAMERA_PERMISSION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent cameraIntent = new Intent(Verification.this,GooglyEyesActivity.class);
+                    startActivity(cameraIntent);
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
                 }
-                break;
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
+
 }

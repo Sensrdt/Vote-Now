@@ -164,7 +164,7 @@ public class Login extends AppCompatActivity {
                             }
                             String name=response.getString("Name");
                             String id = response.getString("ID");
-                            Intent intent = new Intent(Login.this,StartPage.class);
+                            Intent intent = new Intent(Login.this,HomeScreen.class);
                             intent.putExtra("name",name);
                             intent.putExtra("id",id);
                             intent.putExtra("phone",getPhone);
@@ -192,7 +192,8 @@ public class Login extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-        moveTaskToBack(true);
+        Intent intent = new Intent(Login.this,HomeScreen.class);
+        startActivity(intent);
     }
+
 }

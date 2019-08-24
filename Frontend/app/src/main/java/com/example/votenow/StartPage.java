@@ -130,6 +130,9 @@ public class StartPage extends AppCompatActivity {
         }
         else{
             volley();
+
+            //Intent intent = new Intent(StartPage.this,Verification.class);
+            //startActivity(intent);
         }
     }
 
@@ -206,5 +209,11 @@ public class StartPage extends AppCompatActivity {
         acnt.setVisibility(View.INVISIBLE);
         createVote.setVisibility(View.INVISIBLE);
         next.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(StartPage.this,HomeScreen.class);
+        startActivity(intent);
     }
 }

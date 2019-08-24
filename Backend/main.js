@@ -8,7 +8,6 @@ const {
 } = require('./Routes/register');
 const login = require('./Routes/login');
 const uploads = require('./Routes/uploads');
-const ongoing = require('./Routes/ongoing');
 const uploadList = require('./Routes/uploadList');
 const listchecking = require('./Routes/list_checking');
 const voteControl = require('./Routes/voteControl');
@@ -34,10 +33,10 @@ app.post('/login', login);
 app.post('/admin/register', adminRegister);
 app.post('/:id/upload', uploads);
 app.post('/:id/org_register', orgRegister);
-app.post('/:voteId/:id/ongoing', ongoing);
 app.post('/:id/voter_list_checking', listchecking);
 app.post('/uploadList', uploadList);
 app.post('/voteControl/:command', voteControl);
+app.post('/list_checking', listchecking);
 
 connect({
   app,

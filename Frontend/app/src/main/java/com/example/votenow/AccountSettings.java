@@ -56,7 +56,7 @@ public class AccountSettings extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(AccountSettings.this,StartPage.class);
+        Intent intent = new Intent(AccountSettings.this,HomeScreen.class);
         startActivity(intent);
     }
 }
