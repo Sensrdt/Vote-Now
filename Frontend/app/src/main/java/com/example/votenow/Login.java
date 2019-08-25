@@ -137,14 +137,14 @@ public class Login extends AppCompatActivity {
         queue.start();
         JSONObject jsonObject = new JSONObject();
 
-        String url =getResources().getString(R.string.URL)+"login" ;
+        String URL=getResources().getString(R.string.URL)+"login" ;
         try {
             jsonObject.accumulate("phn",getPhone);
             jsonObject.accumulate("passw", md5(getPassword));
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL,
                 jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -158,6 +158,8 @@ public class Login extends AppCompatActivity {
 
                                     meditor.putString("number", getPhone);
                                     meditor.putString("password",getPassword);
+                                    meditor.putString("id",response.getString("ID"));
+                                    meditor.putString("name",response.getString("Name"));
                                     meditor.commit();
                                 }
 

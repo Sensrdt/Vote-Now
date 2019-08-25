@@ -43,9 +43,9 @@ public class AccountSettings extends AppCompatActivity {
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         meditor = sharedPreferences.edit();
 
-        getName=getIntent().getStringExtra("name");
-        getPhnNo=getIntent().getStringExtra("phone");
-        getPasswordFromLocal=getIntent().getStringExtra("password");
+        getName=sharedPreferences.getString("name","null");
+        getPhnNo=sharedPreferences.getString("number","null");
+        getPasswordFromLocal=sharedPreferences.getString("password","null");
 
         name.setText(getName);
         phone.setText(getPhnNo);
