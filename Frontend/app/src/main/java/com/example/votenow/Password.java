@@ -158,7 +158,7 @@ public class Password extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 

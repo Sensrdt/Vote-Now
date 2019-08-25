@@ -24,12 +24,12 @@ import org.json.JSONObject;
 public class HomeScreen extends AppCompatActivity {
 
     private Button VN, AC, CV, LO,viewVote;
-    String name, id, phoneNumber, getPassword;
+    String name, id, phoneNumber, getPassword,orgName;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor meditor;
     AlertDialog alertDialog;
 
-    String createVoteURL,URL;
+    String createVoteURL,URL,viewCreatedVote,startVoteUrl,endVoteUrl,resultURL;
 
     ProgressDialog progressDialog;
 
@@ -50,13 +50,17 @@ public class HomeScreen extends AppCompatActivity {
         meditor = sharedPreferences.edit();
 
         name=intent.getStringExtra("name");
-        id=intent.getStringExtra("id");
+        id=sharedPreferences.getString("id","null");
         phoneNumber=intent.getStringExtra("phone");
         getPassword=sharedPreferences.getString("password","null");
 
+
         //URL
         URL=getResources().getString(R.string.URL);
+        startVoteUrl=URL+"voteControl/startVote";
+        endVoteUrl=URL+"voteControl/endVote";
         createVoteURL=URL+"admin/register";
+        viewCreatedVote=URL+"voteControl/status";
 
         CV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,13 +74,11 @@ public class HomeScreen extends AppCompatActivity {
                 progressDialog.setTitle("Create Vote");
                 progressDialog.setCanceledOnTouchOutside(false);
 
+                volleyCreateVote();
 
 
-                Intent intent = new Intent(HomeScreen.this,CreateVote
-                        .class);
-                intent.putExtra("id",id);
-                startActivity(intent);
-                finish();
+
+
 
             }
         });
@@ -112,10 +114,66 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //voteGoingOn();
-                voteNotStarted();
+                //voteNotStarted();
                 //voteEnd();
+                viewCreatedVoteVolley();
             }
         });
+    }
+
+    private void viewCreatedVoteVolley() {
+        //progressDialog.show();
+
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        queue.start();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.accumulate("id",id);
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, viewCreatedVote,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            //progressDialog.dismiss();
+                            if(response.getBoolean("Done")==true){
+
+                                orgName=response.getString("orgName");
+                                String status=response.getString("status");
+                                if (status.equals("N"))
+                                    voteNotStarted();
+                                else if(status.equals("o"))
+                                    voteGoingOn();
+                                else
+                                    voteEnd();
+                                //startActivity(new Intent(HomeScreen.this,CreateVote.class));
+                            }
+
+
+                        }
+                        catch (Exception e){
+                            //progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), error.networkResponse.data.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        queue.add(jsonObjectRequest);
+        // Toast.makeText(getApplicationContext(),"done",Toast.LENGTH_SHORT).show();
     }
 
     private void voteEnd() {
@@ -161,7 +219,7 @@ public class HomeScreen extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Start Vote", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(HomeScreen.this,"Start",Toast.LENGTH_SHORT).show();
+                startVoteVolley();
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel Vote", new DialogInterface.OnClickListener() {
@@ -180,20 +238,65 @@ public class HomeScreen extends AppCompatActivity {
 
     }
 
-    private void volley() {
+    private void startVoteVolley() {
         progressDialog.show();
+
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         queue.start();
         JSONObject jsonObject = new JSONObject();
-
-        String url =getResources().getString(R.string.URL)+"login" ;
         try {
             jsonObject.accumulate("id",id);
 
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, startVoteUrl,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            progressDialog.dismiss();
+                            if(response.getBoolean("Done")){
+                                Toast.makeText(HomeScreen.this,"Vote has stared",Toast.LENGTH_LONG).show();
+                            }
+
+
+                        }
+                        catch (Exception e){
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"No Vote under You",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        queue.add(jsonObjectRequest);
+        // Toast.makeText(getApplicationContext(),"done",Toast.LENGTH_SHORT).show();
+    }
+
+    private void volleyCreateVote() {
+        progressDialog.show();
+
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        queue.start();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.accumulate("id",id);
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, createVoteURL,
                 jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -210,7 +313,7 @@ public class HomeScreen extends AppCompatActivity {
                             }
                             catch (Exception e){
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(),"Retry",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -219,7 +322,7 @@ public class HomeScreen extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Retry", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), error.networkResponse.data.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 
