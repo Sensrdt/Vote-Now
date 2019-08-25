@@ -62,7 +62,7 @@ public class CreateVote extends AppCompatActivity {
         editText=findViewById(R.id.inputText);
         String URL= getResources().getString(R.string.URL);
         orgURL=URL+id+"/org_register";
-        candidateURL=URL+id+"id/update";
+        candidateURL=URL+id+"id/updateCandidate";
 
 
         ((Button)findViewById(R.id.addNew)).setOnClickListener(new View.OnClickListener() {
@@ -112,7 +112,7 @@ public class CreateVote extends AppCompatActivity {
         String url =getResources().getString(R.string.URL)+"register" ;
         try {
             jsonObject.accumulate("id",id );
-            jsonObject.accumulate("ord",editText.getText().toString());
+            jsonObject.accumulate("orgName",editText.getText().toString());
 
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -125,6 +125,7 @@ public class CreateVote extends AppCompatActivity {
                         try {
                             if(response.getBoolean("Done")){
                                 VOTE_ID=response.getString("ID");
+                                Toast.makeText(CreateVote.this,VOTE_ID,Toast.LENGTH_LONG).show();
                                 volleyCandidates();
                             }
 

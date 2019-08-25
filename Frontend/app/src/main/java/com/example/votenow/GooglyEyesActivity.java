@@ -160,6 +160,13 @@ public final class GooglyEyesActivity extends AppCompatActivity {
         startActivity(new Intent(GooglyEyesActivity.this,Verification.class));
     }
 
+    public void goBack(String a){
+        Intent intent = new Intent(GooglyEyesActivity.this,Verification.class);
+        intent.putExtra("vDone",a);
+        startActivity(intent);
+
+    }
+
     /**
      * Handles the requesting of the camera permission.  This includes showing a "Snackbar" message
      * of why the permission is needed then sending the request.
@@ -288,10 +295,10 @@ public final class GooglyEyesActivity extends AppCompatActivity {
     public void eyeCounter(boolean right, boolean left) {
 
         if(pos==-1) readOut();
-        if(errors > 5) Toast.makeText(this,"ERRORED",Toast.LENGTH_LONG).show();
+        if(errors > 10) goBack("no");
         if(lastL==left && lastR==right) return;
         if (pos > actionString.length()) {
-            onBackPressed();
+            goBack("yes");
 
             lastL = left;
             lastR = right;

@@ -34,6 +34,8 @@ public class Verification extends AppCompatActivity {
     boolean faceBool=false,idBool=false;
     ImageButton next;
 
+    String isVefify="";
+
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 
@@ -56,7 +58,21 @@ public class Verification extends AppCompatActivity {
                 check();
             }
         });
+        try {
+            isVefify = getIntent().getExtras().getString("vDone", "none");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
+        Toast.makeText(this,isVefify,Toast.LENGTH_SHORT).show();
+
+        if(isVefify.equals("yes")){
+                Toast.makeText(this,"Face Veriification Done",Toast.LENGTH_SHORT).show();
+
+            }else{
+                Toast.makeText(this,"Face Veriification Not Done",Toast.LENGTH_SHORT).show();
+            }
 
         idButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,13 +153,15 @@ public class Verification extends AppCompatActivity {
 
     }
 
-    public void check(){
-        if(faceBool==true && idBool==true){
-            Toast.makeText(this,"Vote Done",Toast.LENGTH_LONG).show();
-        }else if(faceBool==false){
-            faceButton.setError("Face Not Uploaded");
-        }else{
+    public void check() {
+
+        if (faceBool == false && idBool == true && isVefify.equals("yes")) {
+            Toast.makeText(this, "Verification Done", Toast.LENGTH_LONG).show();
+        } else if (idBool==false){
             idButton.setError("Id Not Uploaded");
+        }
+        else {
+            Toast.makeText(this, "Verification Done", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -189,4 +207,9 @@ public class Verification extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(Verification.this,HomeScreen.class));
+        finish();
+    }
 }
