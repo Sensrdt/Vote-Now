@@ -1,8 +1,7 @@
 const { client } = require('../server');
 
 exports.poll = (req, res) => {
-  const { Admin_id } = req.params;
-  const { voteCode, orgName, name } = req.body;
+  const { orgName, name } = req.body;
 
   const db = client.db('Db');
   db.collection('organisation').findOne({ orgName }, (err, field) => {
@@ -16,4 +15,20 @@ exports.poll = (req, res) => {
       res.send({ Done: true });
     }
   });
+};
+
+exports.results = (req, res) => {
+  const db = client.db('Db');
+
+  const { orgName } = req.body;
+  db.collection(
+    'organisation'.findOne({ orgName }, (err, f) => {
+      if (f === null || f.admins[0].list === null) {
+        res.send({ Done: false });
+        return;
+      }
+      const max = a => a.reduce((m, x) => (m > x ? m : x));
+      res.send({ Winner: max(list) });
+    })
+  );
 };
