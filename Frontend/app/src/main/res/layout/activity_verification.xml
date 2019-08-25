@@ -106,18 +106,6 @@
                 android:textSize="24sp"
                 />
             <Button
-                android:id="@+id/sideFace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/background_light"
-                android:focusable="true"
-                android:hint="@string/face"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                />
-            <Button
                 android:id="@+id/inputId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

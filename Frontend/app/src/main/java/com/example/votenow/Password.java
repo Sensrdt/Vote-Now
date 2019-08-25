@@ -183,7 +183,7 @@ public class Password extends AppCompatActivity {
         } else if (!(getCPassword.equals(getPassword))) {
             Toast.makeText(this, "Password did not match with Confirm Password", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
             volley();
 
 
