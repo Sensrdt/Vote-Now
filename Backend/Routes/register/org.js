@@ -11,6 +11,7 @@ module.exports = (req, res) => {
   const db = client.db('Db');
 
   db.collection('admin').findOne({ Admin_Id: id }, (err, field) => {
+    console.log('ORG!!!');
     if (err) console.log(err);
     let { Organisation } = field;
     if (Organisation === null || Organisation === undefined) Organisation = [];
@@ -34,11 +35,13 @@ module.exports = (req, res) => {
         },
         error => {
           if (err) console.log(error);
-          else
+          else {
+            console.log('Org');
             res.status(200).send({
               Done: true,
               ID: vtc,
             });
+          }
         }
       );
     } else {
@@ -50,12 +53,11 @@ module.exports = (req, res) => {
         { orgName },
         { $set: { admins } },
         e => {
-          if (e) console.log(e);
+          if (e) console.log(`d${e}`);
         }
       );
     }
   });
-  res.send({});
 };
 
 ids.configure({
