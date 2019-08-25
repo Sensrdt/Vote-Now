@@ -36,6 +36,7 @@ public class StartPage extends AppCompatActivity {
     SharedPreferences.Editor meditor;
 
     ProgressDialog progressDialog;
+    String url;
 
 
     boolean aBoolean=true;
@@ -52,6 +53,8 @@ public class StartPage extends AppCompatActivity {
         vCode=findViewById(R.id.inputText);
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         meditor = sharedPreferences.edit();
+        String URL= getResources().getString(R.string.URL);
+
 
         progressDialog=new ProgressDialog(this);
         progressDialog.setMessage("Please Wait While We Log In");
@@ -67,6 +70,8 @@ public class StartPage extends AppCompatActivity {
         id=intent.getStringExtra("id");
         phoneNumber=intent.getStringExtra("phone");
         getPassword=sharedPreferences.getString("password","null");
+
+        url=URL+id+"/list_checking";
 
         Toast.makeText(this,name+" "+id,Toast.LENGTH_SHORT).show();
 
@@ -130,9 +135,9 @@ public class StartPage extends AppCompatActivity {
         }
         else{
             //volley();
+            startActivity(new Intent(this,Verification.class));
 
-            Intent intent = new Intent(StartPage.this,Verification.class);
-            startActivity(intent);
+
         }
     }
 
@@ -142,7 +147,6 @@ public class StartPage extends AppCompatActivity {
             queue.start();
             JSONObject jsonObject = new JSONObject();
 
-            String url =getResources().getString(R.string.URL)+"login" ;
             try {
                 jsonObject.accumulate("voteCode",getvCode);
                 jsonObject.accumulate("Id", id);
@@ -158,10 +162,10 @@ public class StartPage extends AppCompatActivity {
                         public void onResponse(JSONObject response) {
                             try {
                                 if (response.getBoolean("Done")) {
-                                    String voteName=response.getString("");
-                                    JSONArray candidateName=response.getJSONArray("");
+                                    //String voteName=response.getString("");
+                                    JSONArray candidateName=response.getJSONArray("Candidates");
                                     Intent intent=new Intent(StartPage.this,VoteNow.class);
-                                    intent.putExtra("Name",voteName);
+                                    //intent.putExtra("Name",voteName);
                                     intent.putExtra("Candidates", (Parcelable) candidateName);
 
                                 }
