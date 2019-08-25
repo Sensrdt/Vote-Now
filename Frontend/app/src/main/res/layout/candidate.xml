@@ -28,8 +28,6 @@
 
     </android.support.v7.widget.CardView>
 
-
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -45,23 +43,13 @@
             android:layout_margin="7dp"
             android:background="#ff5959"
             android:padding="10dp">
-
-            <RelativeLayout
-                android:id="@+id/relative"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
                 <Button
+                    android:id="@+id/addNew"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+"
                     android:background="#00000000"
-                    android:textSize="64sp"
-                    android:onClick="addEdit"/>
+                    android:textSize="64sp"/>
 
                 <ImageButton
                     android:id="@+id/next"
@@ -74,11 +62,8 @@
                     android:layout_marginBottom="8dp"
                     android:backgroundTint="@android:color/transparent"
                     android:elevation="0.1dp"
-                    android:src="@drawable/next" />
+                    android:src="@drawable/next"/>
             </RelativeLayout>
-
-
-        </RelativeLayout>
     </LinearLayout>
     <EditText
         android:id="@+id/inputText"
@@ -92,4 +77,15 @@
         android:textAlignment="center"
         android:textSize="24sp"
         tools:layout_editor_absoluteX="0dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/candidateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+    </ScrollView>
+
 </LinearLayout>

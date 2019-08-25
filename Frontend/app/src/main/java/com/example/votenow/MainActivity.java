@@ -22,13 +22,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         next=findViewById(R.id.imageButton);
-        check();
+        //check();
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 check();
             }
         });
+        startActivity(new Intent(this, Login.class));
+
     }
 
 
