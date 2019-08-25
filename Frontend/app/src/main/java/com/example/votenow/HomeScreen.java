@@ -58,7 +58,7 @@ public class HomeScreen extends AppCompatActivity {
         //URL
         URL=getResources().getString(R.string.URL);
         startVoteUrl=URL+"voteControl/startVote";
-        endVoteUrl=URL+"voteControl/endVote";
+        endVoteUrl=URL+"voteControl/stopVote";
         createVoteURL=URL+"admin/register";
         viewCreatedVote=URL+"voteControl/status";
 
@@ -146,6 +146,7 @@ public class HomeScreen extends AppCompatActivity {
 
                                 orgName=response.getString("orgName");
                                 String status=response.getString("status");
+                                Toast.makeText(HomeScreen.this,status,Toast.LENGTH_SHORT).show();
                                 if (status.equals("N"))
                                     voteNotStarted();
                                 else if(status.equals("o"))
@@ -154,6 +155,8 @@ public class HomeScreen extends AppCompatActivity {
                                     voteEnd();
                                 //startActivity(new Intent(HomeScreen.this,CreateVote.class));
                             }
+                            else
+                                Toast.makeText(HomeScreen.this,"No Vote Under You",Toast.LENGTH_LONG).show();
 
 
                         }
@@ -168,7 +171,7 @@ public class HomeScreen extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), error.networkResponse.data.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "404"+error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -183,30 +186,40 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(HomeScreen.this,"View Result",Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(HomeScreen.this,"No Result",Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
             }
         });
         alertDialog.show();
     }
 
     private void voteGoingOn(){
+
+
         alertDialog.setTitle("Vote is Going On");
         alertDialog.setMessage("Do You Want To Stop the Vote?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Stop Vote", new DialogInterface.OnClickListener() {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(HomeScreen.this,"Stop Vote",Toast.LENGTH_SHORT).show();
+                endVoteVolley();
+                alertDialog.dismiss();
+
             }
         });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(HomeScreen.this,"nkj",Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+
             }
         });
         alertDialog.show();
@@ -215,22 +228,20 @@ public class HomeScreen extends AppCompatActivity {
 
     private void voteNotStarted(){
         alertDialog.setTitle("Vote Has Not Yet Started");
-        alertDialog.setMessage("Do You Want Start The Vote or Cancel the Vote");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Start Vote", new DialogInterface.OnClickListener() {
+        alertDialog.setMessage("Do You Want Start The Vote?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startVoteVolley();
+                alertDialog.dismiss();
+
             }
         });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel Vote", new DialogInterface.OnClickListener() {
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,"No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(HomeScreen.this,"Cancel",Toast.LENGTH_SHORT).show();
-            }
-        });
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Back", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+
 
             }
         });
@@ -238,8 +249,55 @@ public class HomeScreen extends AppCompatActivity {
 
     }
 
+    private void endVoteVolley() {
+        //progressDialog.show();
+        alertDialog.dismiss();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        queue.start();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.accumulate("id",id);
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, endVoteUrl,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            //progressDialog.dismiss();
+                            if(response.getBoolean("Done")){
+                                Toast.makeText(HomeScreen.this,"Vote Calculated.Result is out",Toast.LENGTH_LONG).show();
+
+                            }
+
+
+                        }
+                        catch (Exception e){
+                            //progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"No Vote under You",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "H"+error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        queue.add(jsonObjectRequest);
+        // Toast.makeText(getApplicationContext(),"done",Toast.LENGTH_SHORT).show();
+    }
+
     private void startVoteVolley() {
-        progressDialog.show();
+        //progressDialog.show();
 
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         queue.start();
@@ -258,7 +316,7 @@ public class HomeScreen extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
-                            progressDialog.dismiss();
+                            //progressDialog.dismiss();
                             if(response.getBoolean("Done")){
                                 Toast.makeText(HomeScreen.this,"Vote has stared",Toast.LENGTH_LONG).show();
                             }
@@ -266,7 +324,7 @@ public class HomeScreen extends AppCompatActivity {
 
                         }
                         catch (Exception e){
-                            progressDialog.dismiss();
+                            //progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(),"No Vote under You",Toast.LENGTH_SHORT).show();
                         }
 
@@ -275,7 +333,7 @@ public class HomeScreen extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
+                        //progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
