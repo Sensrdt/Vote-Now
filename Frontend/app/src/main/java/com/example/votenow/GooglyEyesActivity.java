@@ -73,7 +73,7 @@ import java.util.Locale;
  * facing mode.<p>
  */
 
- //textToSpeech.speak(s,TextToSpeech.QUEUE_FLUSH,null);
+//textToSpeech.speak(s,TextToSpeech.QUEUE_FLUSH,null);
 public final class GooglyEyesActivity extends AppCompatActivity {
     private static final String TAG = "GooglyEyes";
 
@@ -98,7 +98,6 @@ public final class GooglyEyesActivity extends AppCompatActivity {
      */
 
     private String actionString = "";
-    private String[] AString=null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,36 +125,18 @@ public final class GooglyEyesActivity extends AppCompatActivity {
 
         for(int x=0;x<10;x++) {
             actionString = "";
-            int size = ((int) (Math.random() * 100)) % 4 + 3;
+            int size = ((int) (Math.random() * 100)) % 4 + 6;
             boolean left = true, right = true;
             for (int i = 0; i < size; i++) {
-                int action = ((int) (Math.random() * 100)) % 3;
+                int action = ((int) (Math.random() * 100)) % 2;
                 switch (action) {
                     case 0:
-                        if (left)
-                            actionString += "Please close your left eye\n";
-
-                        else
-                            actionString += "Please open your left eye\n";
+                            actionString += "L";
                         left = !left;
                         break;
                     case 1:
-                        if (right)
-                            actionString += "Please close your right eye\n";
-                        else
-                            actionString += "Please open your right eye\n";
+                            actionString += "R";
                         right = !right;
-                        break;
-                    case 2:
-                        if (right && left) {
-                            actionString += "Please close both your eyes\n";
-                            right=false;
-                            left=false;
-                        }
-                        else {
-                            actionString += "Please open both your eyes\n";
-                            right=left=true;
-                        }
                         break;
                     default:
                         Toast.makeText(this, "Wut?", Toast.LENGTH_SHORT).show();
@@ -163,14 +144,12 @@ public final class GooglyEyesActivity extends AppCompatActivity {
             }
             Log.d("RANDOM_TEST", actionString+"\n\n");
         }
-
-        AString = actionString.split("\n");
         Log.d("StringAction",actionString);
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
-                createCameraSource();
+            createCameraSource();
         } else {
             requestCameraPermission();
         }
@@ -290,38 +269,72 @@ public final class GooglyEyesActivity extends AppCompatActivity {
                 .show();
     }
 
-    private boolean lastL = false, lastR = false; int pos = 0;
+    private boolean lastL = true, lastR = true; int pos = -1, errors = 0;
     private void readOut(){
-        /*pos++;
-        Log.d("POS",""+pos);
-        textToSpeech.speak(AString[pos% AString.length],TextToSpeech.QUEUE_FLUSH,null, "MySpeach");
-        Log.d("EyeofConduct",AString[pos% AString.length]);*/
-        int eye = (int)(Math.random()*2);
+        pos++;
+        Log.d("ERRR",""+actionString.length());
+
+        if(pos>actionString.length()) return;
+        Log.d("EyeofConduct",""+pos);
+        String text = "";
+        if(actionString.charAt(pos% actionString.length())=='L')text="Switch your left eye";
+        else if(actionString.charAt(pos% actionString.length())=='R') text="Switch your right eye";
+        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null, "MySpeach");
+        //Log.d("EyeofConduct",actionString[pos% actionString.length()]);
+        /*int eye = (int)(Math.random()*2);
         int state = (int)(Math.random()*2);
-        textToSpeech.speak("Please " +(state==0?"close":"open")+" your "+(eye==0?"left":"right")+" eye" ,TextToSpeech.QUEUE_FLUSH,null,"World");
+        textToSpeech.speak("Please " +(state==0?"close":"open")+" your "+(eye==0?"left":"right")+" eye" ,TextToSpeech.QUEUE_FLUSH,null,"World");*/
     }
     public void eyeCounter(boolean right, boolean left) {
 
-        left = true;
-        right = true;
-        if(lastL != left) {
-            Log.d("EyeofConduct", left?"LeftOpen":"LeftClose");
-            readOut();
-        }
-        /*
-            Initial state
-            (Initial state) ^ -1
+        if(pos==-1) readOut();
+        if(errors > 5) Toast.makeText(this,"ERRORED",Toast.LENGTH_LONG).show();
+        if(lastL==left && lastR==right) return;
+        if (pos > actionString.length()) {
+            onBackPressed();
 
-        */
-
-        if(lastR != right) {
-            Log.d("EyeofConduct", right?"RightOpen":"RightClose");
-            readOut();
+            lastL = left;
+            lastR = right;
+            return;
         }
-        lastL = left;
-        lastR = right;
-        if(left) Log.d("Eye", "Left");
-        if(right) Log.d("Eye", "Right");
+        try {
+            if (actionString.charAt(pos % actionString.length())=='L') {
+                if (left != lastL && right == lastR) {
+                    readOut();
+
+                    lastL = left;
+                    lastR = right;
+                    return;
+                } else {
+                    Log.d("ERRR","ERROR");
+                    errors+=1;
+
+                    lastL = left;
+                    lastR = right;
+                    return;
+                }
+            }
+            if (actionString.charAt(pos % actionString.length())=='R') {
+                if (left == lastL && right != lastR) {
+                    readOut();
+
+                    lastL = left;
+                    lastR = right;
+                    return;
+                } else {
+                    Log.d("ERRR", "ERROR");
+                    errors += 1;
+
+                    lastL = left;
+                    lastR = right;
+                    return;
+                }
+            }
+            lastL = left;
+            lastR = right;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     //==============================================================================================
     // UI

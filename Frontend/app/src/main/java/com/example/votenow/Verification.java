@@ -24,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Verification extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 1;
+    private static final int MY_UPLOAD_PERMISSION_CODE = 0;
     private static final int MY_CAMERA_REQUEST_CODE = 0;
     public Button faceButton,idButton;
     ImageView imageView;
@@ -43,7 +44,7 @@ public class Verification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
         faceButton=findViewById(R.id.inputFace);
-        idButton=findViewById(R.id.inputFace);
+        idButton=findViewById(R.id.inputId);
         imageView=findViewById(R.id.imageView);
         next=findViewById(R.id.next);
         circleImageView=findViewById(R.id.circleView);
@@ -54,6 +55,45 @@ public class Verification extends AppCompatActivity {
             public void onClick(View v) {
                 check();
             }
+        });
+
+
+        idButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (ContextCompat.checkSelfPermission(Verification.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(Verification.this,
+                            Manifest.permission.CAMERA)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(Verification.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                MY_UPLOAD_PERMISSION_CODE);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                    }
+                } else {
+                    // Permission has already been granted
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    try {
+                        startActivityForResult(cameraIntent,MY_UPLOAD_PERMISSION_CODE);
+                    }catch (Exception e){
+                        Log.e("FACE",e.getMessage());                    }
+
+                }
+
+            }
+
+
+
         });
 
         faceButton.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +117,7 @@ public class Verification extends AppCompatActivity {
                         // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                         // app-defined int constant. The callback method gets the
                         // result of the request.
-                    }
+                      }
                 } else {
                     // Permission has already been granted
                     Intent cameraIntent = new Intent(Verification.this,GooglyEyesActivity.class);
@@ -110,7 +150,7 @@ public class Verification extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode!=MY_CAMERA_REQUEST_CODE) return;
+        if(requestCode!=MY_UPLOAD_PERMISSION_CODE) return;
         try {
             bitmap=(Bitmap)data.getExtras().get("data");
             circleImageView.setImageBitmap(bitmap);
