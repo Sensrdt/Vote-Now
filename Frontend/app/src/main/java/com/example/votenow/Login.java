@@ -158,6 +158,8 @@ public class Login extends AppCompatActivity {
 
                                     meditor.putString("number", getPhone);
                                     meditor.putString("password",getPassword);
+                                    meditor.putString("id",response.getString("ID"));
+                                    meditor.putString("name",response.getString("Name"));
                                     meditor.commit();
                                 }
 
